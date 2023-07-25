@@ -33,8 +33,8 @@ class Server {
 				return {};
 			} else {
 				const _object = {
-					info : "something unexpected occured",
-					status : response.status
+					info: "something unexpected occured",
+					status: response.status
 				};
 
 				return _object;

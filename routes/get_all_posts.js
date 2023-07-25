@@ -36,4 +36,4 @@ function isEmpty(objectEmpty) {
 }
 
 router.get("/get-posts", get_all_posts);
-module.exports = get_all_posts;
+module.exports = router;
