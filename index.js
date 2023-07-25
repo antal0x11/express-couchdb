@@ -11,31 +11,9 @@ const baseUrl = process.env.DB;
 const port = process.env.PORT;
 
 
-app.get("/get-posts", async function(req,res,next) {
+const get_all_posts = require("./routes/get_all_posts");
 
-	const url = `${baseUrl}/_all_docs?include_docs=true`;
-
-	try {
-		const response = await fetch(url, {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-				"Authorization" : "Basic " + Buffer.from(credentials).toString("base64")
-			}
-		});
-
-		if (response.ok) {
-			const data = await response.json();
-			res.status(200).json({data: data});
-		} else {
-			res.status(404).json({info : "nothing found"});
-		}
-	} catch(e) {
-		console.error(e);
-		res.status(500).json({info: "something broke"});
-	}
-
-});
+app.use("/", get_all_posts);
 
 app.post("/create-post", async function(req,res,next) {
 	
