@@ -32,6 +32,11 @@ async function get_all_posts(req,res,next) {
 		});
 	} catch(e) {
 		console.error(e);
+		res.status(500).json(
+		{
+			"info" : "something broke",
+			"internal_error_code": "GAP00"
+		})
 	}
 }
 
