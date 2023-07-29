@@ -7,7 +7,8 @@
 				last_name : string,
 				date : string,
 				msg : string,
-				valid_post : boolean	
+				valid_post : boolean,
+				last_update : string	
 			}
 */
 
@@ -26,6 +27,7 @@ function Post(props) {
 	this.last_name = last_name;
 	this.date = date;
 	this.msg = msg;
+	this.last_update = date;
 }
 
 module.exports = Post;

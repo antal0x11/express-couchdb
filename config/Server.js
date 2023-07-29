@@ -132,7 +132,7 @@ class Server {
 			"selector" : {
 				"username" : user
 			},
-			"fields" : ["_id", "_rev", "username", "first_name", "last_name", "date", "msg"]
+			"fields" : ["_id", "_rev", "username", "first_name", "last_name", "date", "msg", "last_update"]
 		};
 
 		const options = {
@@ -202,6 +202,85 @@ class Server {
 			}
 		}
 
+	}
+
+
+	async updateMsg(msg, postID, revID) { //TODO: fix issue, does not update
+
+		const url = `${this.host}/${postID}`;
+		const urlSearch = `${this.host}/_find`;
+
+		if (this.host === null || this.credentials === null) {
+			throw new Error("missing host or credentials");
+		}
+
+		try {
+
+			const selectorParams = {
+				"selector" : {
+					"_id" : postID
+				},
+				"fields" : ["_id", "_rev", "username", "first_name", "last_name", "date", "msg", "last_update"],
+				"limit" : 1
+			};
+
+
+			const searchParams = {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					"Authorization": `Basic ${this.credentials}`
+				},
+				body : JSON.stringify(selectorParams)
+			}
+
+			const findPost = await fetch(urlSearch, searchParams);
+			const postData = await findPost.json();
+			
+			const { username, first_name, last_name, date } = postData.docs[0];
+
+			const parameters = {
+				_id : postID,
+				_rev : revID,
+				username : username,
+				first_name : first_name,
+				last_name : last_name,
+				date : date,
+				msg : msg,
+				last_update : new Date().toString()
+			};
+
+			const options = {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+					"Authorization": `Basic ${this.credentials}`
+				},
+				body : JSON.stringify(parameters)
+			};
+
+			
+			const response = await fetch(url, options);
+
+			if (response.status === 200 || response.status === 201) {
+				return {
+					"status_code" : 200,
+					"info" : "update completed"
+				}
+			} else {
+				return {
+					"status_code": response.status,
+					"info" : "udpate fail"
+				}
+			}
+			
+		} catch(e) {
+			console.error(e);
+			return {
+					"status_code": 500,
+					"info" : "udpate fail"
+				}
+		} 
 	}
 
 }
