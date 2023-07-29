@@ -11,55 +11,15 @@ const baseUrl = process.env.DB;
 const port = process.env.PORT;
 
 
-const get_all_posts = require("./routes/get_all_posts");
+const get_all_posts = require("./routes/posts/get_all_posts");
+const delete_post = require("./routes/posts/delete_post");
+const create_post = require("./routes/posts/create_post");
+const get_user_posts = require("./routes/posts/get_user_posts");
 
 app.use("/", get_all_posts);
-
-app.post("/create-post", async function(req,res,next) {
-	
-	const url = `${baseUrl}`;
-
-	const { username, first_name, last_name, msg } = req.body; 
-
-	const usersPost = new Post({
-		username: (typeof(username) === "string" && username !== undefined) ? username : null,
-		first_name: (typeof(first_name) === "string" && first_name !== undefined) ? first_name : null,
-		last_name: (typeof(last_name) === "string" && last_name !== undefined) ? last_name : null,
-		date: new Date().toString(),
-		msg: (typeof(msg) === "string" && msg !== undefined) ? msg : null
-	});
-
-	if (!usersPost.valid_post) {
-		res.status(400).json(
-		{
-			status: "request fail",
-			reason: "missing arguments"
-		});
-
-	} else {
-		try {
-			const response = await fetch(url, {
-				method: "POST",
-				headers: {
-					"Content-Type" : "application/json",
-					"Authorization" : "Basic " + Buffer.from(credentials).toString("base64")
-				},
-				body: JSON.stringify(usersPost)
-			});
-
-			if (response.ok) {
-				const data = await response.json();
-				res.status(200).json(data);
-			} else {
-				res.status(400).json(usersPost);
-			}
-		} catch(e) {
-			console.error(e);
-			res.status(500).json({info: "something broke"});
-		}
-	}
-
-});
+app.use("/", delete_post);
+app.use("/", create_post);
+app.use("/", get_user_posts);
 
 app.listen(port, () => {
 

@@ -24,4 +24,5 @@ jspm_packages/
 .env.production.local
 .env.local
 .vscode-test
+.DS_Store
 

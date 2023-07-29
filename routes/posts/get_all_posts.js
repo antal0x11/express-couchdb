@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Server = require("../config/Server.js");
+const Server = require("../../config/Server.js");
 
 async function get_all_posts(req,res,next) {
 
@@ -25,7 +25,11 @@ async function get_all_posts(req,res,next) {
 			}
 		}
 
-		res.status(200).json(data);
+		const tmpData = data.rows;
+
+		res.status(200).json({
+			"posts" : tmpData.map( item => item.doc)
+		});
 	} catch(e) {
 		console.error(e);
 	}
@@ -35,5 +39,5 @@ function isEmpty(objectEmpty) {
 	return (objectEmpty && Object.keys(objectEmpty).length === 0 && objectEmpty.constructor === Object);
 }
 
-router.get("/get-posts", get_all_posts);
+router.get("/get_posts", get_all_posts);
 module.exports = router;
